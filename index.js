@@ -7,8 +7,9 @@
 // side effect of breaking other tooling like mobile-center and react-native-rename.
 //
 // It's easier just to leave it here.
-import App from "./app/app.tsx"
+// import App from "./app/app.tsx"
+import Todos from "./app/todo-app"
 import { AppRegistry } from "react-native"
 
-AppRegistry.registerComponent("FirestoreDemo", () => App)
-export default App
+AppRegistry.registerComponent("FirestoreDemo", () => Todos)
+export default Todos
