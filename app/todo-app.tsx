@@ -1,18 +1,38 @@
-import React, { useState } from "react"
-import { ScrollView, Text } from "react-native"
+import React, { useState, useEffect } from "react"
+import { FlatList } from "react-native"
 
 import { initialWindowMetrics } from "react-native-safe-area-context"
 
 import firestore from "@react-native-firebase/firestore"
 import { Appbar, TextInput, Button } from "react-native-paper"
 
+import Todo from "./todo"
+
 function Todos() {
   const [todo, setTodo] = useState("")
+  const [todos, setTodos] = useState([])
+
   const ref = firestore().collection("todos")
 
   const {
     insets: { top, bottom },
   } = initialWindowMetrics
+
+  useEffect(() => {
+    return ref.onSnapshot((querySnapshot) => {
+      const list = []
+      querySnapshot.forEach((doc) => {
+        const { title, complete } = doc.data()
+        list.push({
+          id: doc.id,
+          title,
+          complete,
+        })
+      })
+
+      setTodos(list)
+    })
+  }, [])
 
   async function addTodo() {
     await ref.add({
@@ -28,9 +48,12 @@ function Todos() {
         <Appbar.Content title={"TODOs List"} />
       </Appbar>
 
-      <ScrollView style={{ flex: 1, padding: 10 }}>
-        <Text>List of TODOs!</Text>
-      </ScrollView>
+      <FlatList
+        style={{ flex: 1 }}
+        data={todos}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <Todo {...item} />}
+      />
 
       <TextInput label={"New Todo"} textAlign="left" value={todo} onChangeText={setTodo} />
 
