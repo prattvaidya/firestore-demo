@@ -19,19 +19,23 @@ function Todos() {
   } = initialWindowMetrics
 
   useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
-      const list = []
-      querySnapshot.forEach((doc) => {
-        const { title, complete } = doc.data()
-        list.push({
-          id: doc.id,
-          title,
-          complete,
-        })
-      })
+    return (
+      ref
+        // .where("complete", "!=", true)
+        .onSnapshot((querySnapshot) => {
+          const list = []
+          querySnapshot.forEach((doc) => {
+            const { title, complete } = doc.data()
+            list.push({
+              id: doc.id,
+              title,
+              complete,
+            })
+          })
 
-      setTodos(list)
-    })
+          setTodos(list)
+        })
+    )
   }, [])
 
   async function addTodo() {
